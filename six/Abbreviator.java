@@ -1,0 +1,59 @@
+package codewars.six;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+/*
+ * DESCRIPTION:
+ * The word i18n is a common abbreviation of internationalization in the developer community, used instead of typing the whole word and trying to spell it correctly. Similarly, a11y is an abbreviation of accessibility.
+ * 
+ * Write a function that takes a string and turns any and all "words" (see below) within that string of length 4 or greater into an abbreviation, following these rules:
+ * 
+ * A "word" is a sequence of alphabetical characters. By this definition, any other character like a space or hyphen (eg. "elephant-ride") will split up a series of letters into two words (eg. "elephant" and "ride").
+ * The abbreviated version of the word should have the first letter, then the number of removed characters, then the last letter (eg. "elephant ride" => "e6t r2e").
+ * Example
+ * abbreviate("elephant-rides are really fun!")
+ * //          ^^^^^^^^*^^^^^*^^^*^^^^^^*^^^*
+ * // words (^):   "elephant" "rides" "are" "really" "fun"
+ * //                123456     123     1     1234     1
+ * // ignore short words:               X              X
+ * 
+ * // abbreviate:    "e6t"     "r3s"  "are"  "r4y"   "fun"
+ * // all non-word characters (*) remain in place
+ * //                     "-"      " "    " "     " "     "!"
+ * === "e6t-r3s are r4y fun!"
+ */
+
+public class Abbreviator {
+	
+	public String abbreviate(String string) {
+		int ctr = 0;
+		String temp = "";
+		// Add non-alphabetic character to indicate end
+		string = string + "!";
+		String result = string;
+		for (int i = 0; i < string.length(); i++) {
+			if (Character.isAlphabetic(string.charAt(i))) {
+				temp += String.valueOf(string.charAt(i));
+				ctr++;
+			} else {
+				if (ctr > 3) {
+					result = result.replaceFirst(temp, String.valueOf(
+							temp.charAt(0) + String.valueOf(ctr - 2) + String.valueOf(temp.charAt(temp.length() - 1))));
+				}
+				ctr = 0;
+				temp = "";
+			}
+		}
+		// Remove added character
+		return result.substring(0, result.length() - 1);
+	}
+	
+	@Test
+	public void testAbbreviate() {
+		String[] expected = new String[] {"e6t-r3s are r4y fun!", "H3o! W3d!"};
+		String[] actual = new String[] {abbreviate("elephant-rides are really fun!"), abbreviate("Hello! World!")};
+		Assert.assertArrayEquals(expected, actual);
+	}
+
+}
